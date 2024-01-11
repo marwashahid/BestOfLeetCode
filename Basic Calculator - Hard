@@ -1,0 +1,97 @@
+#include<iostream>
+#include<stack>
+#include<string>
+
+using namespace std;
+//BasicCalculator Leetcode
+
+//(1+(4+5+2)-3)+(6+8)
+
+/*
+
+number 
+result 
+sign
+stack
+
+  1. (   
+  -> Push Result to Stack
+  -> Push Sign to Stack
+  -> Result  = 0
+  -> number = 0
+
+  2. Number
+  -> number = (number * 10) + s[i] - '0'
+
+  3.Operand
+  ->result = result + (number * sign)
+  ->number =0
+
+  4. )
+  -> result = result + (number * sign)
+  ->number =0
+  -> result = (result * sign) + stack.top()
+      
+
+*/
+
+int calculate(string s)
+{
+    stack<int> st;
+    int number = 0;
+    int result = 0;
+    int sign = 1;
+
+    for (int i = 0; i < s.length(); i++)
+    {
+        if (s[i] >= '0' && s[i] <= '9')
+        {
+            number = (number * 10) + (s[i] - '0');
+        }
+        else if (s[i] == '+')
+        {
+           
+            result = result + (sign * number);
+            number = 0;
+            sign = 1;
+        }
+        else if (s[i] == '-')
+        {
+            result += (sign * number);
+            number = 0;
+            sign = -1;
+
+        }
+        else if (s[i] == '(')
+        {
+            st.push(result);
+            st.push(sign);
+            sign = 1;
+            result = 0;
+            number = 0;
+        }
+        else if (s[i] == ')')
+        {
+            result = result + (sign * number);
+            number = 0;
+            result = (result * st.top());
+            st.pop();
+            result = result + st.top();
+            st.pop();
+
+        }
+
+    }
+    result += (sign * number);
+    return result;
+}
+
+int main()
+{
+    string s;
+    std::getline(std::cin, s);
+
+   std::cout<< calculate(s);
+
+    return 0;
+}
